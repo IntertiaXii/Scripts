@@ -11,7 +11,7 @@ local HoverEnabled = true
 local Int3UI = {}
 Int3UI.__index = Int3UI
 Int3UI.Name = "Int3UI"
-Int3UI.Version = "2.0.0"
+Int3UI.Version = "2.1.0"
 
 local ACTIVE_WINDOW_KEY = "__INT3_UI_WINDOW"
 local ActiveTweens = setmetatable({}, { __mode = "k" })
@@ -805,7 +805,7 @@ function Window:FocusTab(tab)
 	if not tab or self.SelectedTab ~= tab then return end
 	tab.SectionFocused = false
 	if self.SidebarRuleA then self.SidebarRuleA.Visible = true end
-	if tab.Footer then tab.Footer.Visible = true end
+	if tab.Footer then tab.Footer.Visible = false end
 	tween(tab.Button, 0.14, {
 		BackgroundColor3 = Theme.Ink,
 		Size = UDim2.new(1, 0, 0, 34),
@@ -820,23 +820,6 @@ function Window:FocusTab(tab)
 		Rotation = 45,
 		Size = UDim2.fromOffset(12, 12),
 	}, Enum.EasingStyle.Quart)
-	for _, section in ipairs(tab.Sections) do
-		tween(section.NavButton, 0.14, {
-			BackgroundColor3 = Theme.PaperDark,
-			Size = UDim2.new(1, -20, 0, 34),
-		})
-		tween(section.NavIcon, 0.16, {
-			BackgroundColor3 = Theme.InkSoft,
-			Position = UDim2.fromOffset(12, 17),
-			Rotation = 0,
-		}, Enum.EasingStyle.Quart)
-		tween(section.NavLabel, 0.14, {
-			Position = UDim2.fromOffset(34, 0),
-			TextColor3 = Theme.InkSoft,
-		})
-		if section.NavTopLine then section.NavTopLine.Visible = false end
-		if section.NavBottomLine then section.NavBottomLine.Visible = false end
-	end
 end
 
 function Window:SelectTab(tab)
@@ -852,8 +835,8 @@ function Window:SelectTab(tab)
 		elseif candidate ~= previousTab then
 			candidate.Page.Visible = false
 		end
-		if candidate.SectionList then candidate.SectionList.Visible = selected end
-		if candidate.Footer then candidate.Footer.Visible = selected end
+		if candidate.SectionList then candidate.SectionList.Visible = false end
+		if candidate.Footer then candidate.Footer.Visible = false end
 		tween(candidate.Button, 0.15, {
 			BackgroundColor3 = selected and Theme.Ink or Theme.PaperDark,
 			Size = UDim2.new(1, 0, 0, 34),
@@ -1133,39 +1116,6 @@ function Window:CreateTab(name, options)
 		Parent = page,
 	})
 
-	local tabFooter = create("Frame", {
-		Name = "TabFooter",
-		BackgroundTransparency = 1,
-		LayoutOrder = 1,
-		Size = UDim2.new(1, 0, 0, 8),
-		Visible = false,
-		ZIndex = 8,
-		Parent = tabContainer,
-	})
-	create("Frame", {
-		Name = "RuleA",
-		BackgroundColor3 = Theme.Ink,
-		BorderSizePixel = 0,
-		Size = UDim2.new(1, 0, 0, 3),
-		ZIndex = 9,
-		Parent = tabFooter,
-	})
-	local sectionList = create("Frame", {
-		Name = "Sections",
-		AutomaticSize = Enum.AutomaticSize.Y,
-		BackgroundTransparency = 1,
-		LayoutOrder = 2,
-		Size = UDim2.new(1, 0, 0, 0),
-		Visible = false,
-		ZIndex = 8,
-		Parent = tabContainer,
-	})
-	create("UIListLayout", {
-		Padding = UDim.new(0, 14),
-		SortOrder = Enum.SortOrder.LayoutOrder,
-		Parent = sectionList,
-	})
-
 	local tab = setmetatable({
 		Window = self,
 		Container = tabContainer,
@@ -1173,8 +1123,6 @@ function Window:CreateTab(name, options)
 		Icon = icon,
 		Label = label,
 		Page = page,
-		Footer = tabFooter,
-		SectionList = sectionList,
 		Sections = {},
 		SelectedSection = nil,
 		ActiveSection = nil,
@@ -1201,51 +1149,19 @@ function Window:CreateTab(name, options)
 	return tab
 end
 
-function Tab:SelectSection(section, scroll, focusSection)
+function Tab:SelectSection(section, scroll)
 	if not section then return end
-	focusSection = focusSection == true
 	self.SelectedSection = section
-	self.SectionFocused = focusSection
-	if focusSection then
-		if self.Window.SidebarRuleA then self.Window.SidebarRuleA.Visible = false end
-		if self.Footer then self.Footer.Visible = false end
-		tween(self.Button, 0.14, {
-			BackgroundColor3 = Theme.PaperDark,
-			Size = UDim2.new(1, -20, 0, 34),
-		})
-		tween(self.Label, 0.14, {
-			Position = UDim2.fromOffset(34, 0),
-			TextColor3 = Theme.InkSoft,
-		})
-		tween(self.Icon, 0.16, {
-			BackgroundColor3 = Theme.InkSoft,
-			Position = UDim2.fromOffset(12, 17),
-			Rotation = 0,
-			Size = UDim2.fromOffset(13, 13),
-		}, Enum.EasingStyle.Quart)
-	end
 	for _, candidate in ipairs(self.Sections) do
-		local active = candidate == section
-		local selected = active and focusSection
-		candidate.Root.Visible = active
-		tween(candidate.NavButton, 0.14, {
-			BackgroundColor3 = selected and Theme.Ink or Theme.PaperDark,
-			Size = selected and UDim2.new(1, 0, 0, 34) or UDim2.new(1, -20, 0, 34),
-		})
-		tween(candidate.NavIcon, 0.16, {
-			BackgroundColor3 = selected and Theme.Accent or Theme.InkSoft,
-			Position = selected and UDim2.fromOffset(9, 17) or UDim2.fromOffset(12, 17),
-			Rotation = selected and 45 or 0,
-		}, Enum.EasingStyle.Quart)
-		tween(candidate.NavLabel, 0.14, {
-			Position = selected and UDim2.fromOffset(31, 0) or UDim2.fromOffset(34, 0),
-			TextColor3 = selected and Theme.White or Theme.InkSoft,
-		})
-		if candidate.NavTopLine then candidate.NavTopLine.Visible = selected end
-		if candidate.NavBottomLine then candidate.NavBottomLine.Visible = selected end
+		candidate.Root.Visible = true
 	end
 	section:SetOpen(true)
-	self.Page.CanvasPosition = Vector2.new(0, 0)
+	if scroll then
+		local offset = section.Root.AbsolutePosition.Y
+			- self.Page.AbsolutePosition.Y
+			+ self.Page.CanvasPosition.Y
+		self.Page.CanvasPosition = Vector2.new(0, math.max(0, offset))
+	end
 end
 
 function Section:SetOpen(nextOpen)
@@ -1297,7 +1213,7 @@ function Tab:AddSection(name, options)
 		BackgroundTransparency = 1,
 		LayoutOrder = self.Order,
 		Size = UDim2.new(1, 0, 0, 0),
-		Visible = #self.Sections == 0,
+		Visible = true,
 		ZIndex = 7,
 		Parent = self.Page,
 	})
@@ -1338,62 +1254,6 @@ function Tab:AddSection(name, options)
 		Parent = body,
 	})
 
-	local navButton = create("TextButton", {
-		Name = "Section_" .. sectionName,
-		AutoButtonColor = false,
-		BackgroundColor3 = Theme.PaperDark,
-		BorderSizePixel = 0,
-		LayoutOrder = #self.Sections + 1,
-		Size = UDim2.new(1, -20, 0, 34),
-		Text = "",
-		ZIndex = 8,
-		Parent = self.SectionList,
-	})
-	local navTopLine = create("Frame", {
-		Name = "SelectionTop",
-		BackgroundColor3 = Theme.Ink,
-		BorderSizePixel = 0,
-		Position = UDim2.fromOffset(0, -6),
-		Size = UDim2.new(1, 0, 0, 3),
-		Visible = false,
-		ZIndex = 10,
-		Parent = navButton,
-	})
-	local navBottomLine = create("Frame", {
-		Name = "SelectionBottom",
-		AnchorPoint = Vector2.new(0, 1),
-		BackgroundColor3 = Theme.Ink,
-		BorderSizePixel = 0,
-		Position = UDim2.new(0, 0, 1, 6),
-		Size = UDim2.new(1, 0, 0, 3),
-		Visible = false,
-		ZIndex = 10,
-		Parent = navButton,
-	})
-	local navIcon = create("Frame", {
-		Name = "Icon",
-		AnchorPoint = Vector2.new(0, 0.5),
-		BackgroundColor3 = Theme.InkSoft,
-		BorderSizePixel = 0,
-		Position = UDim2.fromOffset(12, 17),
-		Size = UDim2.fromOffset(12, 12),
-		ZIndex = 9,
-		Parent = navButton,
-	})
-	local navLabel = create("TextLabel", {
-		Name = "Label",
-		BackgroundTransparency = 1,
-		Font = Enum.Font.Gotham,
-		Position = UDim2.fromOffset(34, 0),
-		Size = UDim2.new(1, -34, 1, 0),
-		Text = sectionName,
-		TextColor3 = Theme.InkSoft,
-		TextSize = 12,
-		TextXAlignment = Enum.TextXAlignment.Left,
-		ZIndex = 9,
-		Parent = navButton,
-	})
-
 	local section = setmetatable({
 		Tab = self,
 		Name = sectionTitle,
@@ -1402,11 +1262,6 @@ function Tab:AddSection(name, options)
 		Header = header,
 		Body = body,
 		BodyLayout = bodyLayout,
-		NavButton = navButton,
-		NavIcon = navIcon,
-		NavLabel = navLabel,
-		NavTopLine = navTopLine,
-		NavBottomLine = navBottomLine,
 		Open = true,
 		Generation = 0,
 		ExpandedHeight = 0,
@@ -1422,20 +1277,8 @@ function Tab:AddSection(name, options)
 	end, function()
 		tween(header, 0.12, { TextColor3 = Theme.InkSoft })
 	end)
-	navButton.MouseButton1Click:Connect(function()
-		self:SelectSection(section, true, true)
-	end)
-	bindHover(navButton, function()
-		if not (self.SectionFocused and self.SelectedSection == section) then
-			tween(navButton, 0.12, { BackgroundColor3 = Theme.PaperShadow })
-		end
-	end, function()
-		if not (self.SectionFocused and self.SelectedSection == section) then
-			tween(navButton, 0.12, { BackgroundColor3 = Theme.PaperDark })
-		end
-	end)
 	if #self.Sections == 1 then
-		self:SelectSection(section, false, false)
+		self.SelectedSection = section
 	end
 	return section
 end
