@@ -11,7 +11,7 @@ local HoverEnabled = true
 local Int3UI = {}
 Int3UI.__index = Int3UI
 Int3UI.Name = "Int3UI"
-Int3UI.Version = "2.1.0"
+Int3UI.Version = "2.1.1"
 
 local ACTIVE_WINDOW_KEY = "__INT3_UI_WINDOW"
 local ActiveTweens = setmetatable({}, { __mode = "k" })
@@ -454,9 +454,6 @@ function Int3UI:CreateWindow(options)
 		VisibilityGeneration = 0,
 	}, Window)
 
-	-- Keep the desktop composition intact, but fit it inside smaller phone/tablet
-	-- viewports. UIScale is used instead of rebuilding every control so saved
-	-- positions and the existing visual proportions remain stable.
 	local function applyResponsiveScale()
 		if options.AutoScale == false then return end
 		local camera = Workspace.CurrentCamera
@@ -1368,9 +1365,6 @@ local function tweenControlRowColor(row, duration, color)
 	if accent then tween(accent, duration, { BackgroundColor3 = color }) end
 end
 
--- Public escape hatch for feature panels that need richer content than a
--- single control row while still remaining owned, themed, and laid out by
--- Int3UI. The builder receives the panel and the active theme palette.
 function Tab:AddCustom(options)
 	options = type(options) == "table" and options or {}
 	local height = math.max(tonumber(options.Height) or 120, 24)
@@ -2285,6 +2279,26 @@ function Tab:AddLabel(text)
 		Parent = self.ActiveSection and self.ActiveSection.Body or self.Page,
 	})
 	return label
+end
+
+function Tab:AddParagraph(text)
+	self.Order = self.Order + 1
+	return create("TextLabel", {
+		AutomaticSize = Enum.AutomaticSize.Y,
+		BackgroundTransparency = 1,
+		Font = Enum.Font.Gotham,
+		LayoutOrder = self.Order,
+		LineHeight = 1.05,
+		Size = UDim2.new(1, 0, 0, 0),
+		Text = tostring(text or ""),
+		TextColor3 = Theme.InkSoft,
+		TextSize = 12,
+		TextWrapped = true,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextYAlignment = Enum.TextYAlignment.Top,
+		ZIndex = 7,
+		Parent = self.ActiveSection and self.ActiveSection.Body or self.Page,
+	})
 end
 
 function Window:Destroy()
