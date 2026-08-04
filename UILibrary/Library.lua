@@ -394,6 +394,8 @@ function Int3UI:CreateWindow(options)
 	})
 	local tabList = create("ScrollingFrame", {
 		Name = "TabList",
+		Active = true,
+		ScrollingEnabled = true,
 		AutomaticCanvasSize = Enum.AutomaticSize.Y,
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
@@ -1080,6 +1082,8 @@ function Window:CreateTab(name, options)
 
 	local page = create("ScrollingFrame", {
 		Name = "Page_" .. tostring(name),
+		Active = true,
+		ScrollingEnabled = true,
 		AutomaticCanvasSize = Enum.AutomaticSize.Y,
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
@@ -1788,6 +1792,8 @@ function Tab:AddDropdown(options)
 
 	local list = create("ScrollingFrame", {
 		Name = "Options",
+		Active = true,
+		ScrollingEnabled = true,
 		AutomaticCanvasSize = Enum.AutomaticSize.Y,
 		BackgroundColor3 = Theme.Paper,
 		BorderSizePixel = 0,
