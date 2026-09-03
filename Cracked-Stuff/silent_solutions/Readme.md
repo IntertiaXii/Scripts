@@ -13,7 +13,6 @@
 <img src="https://github.com/user-attachments/assets/1b14fcfc-cf85-4f35-aeb7-3d3c7348f6bd" />
 
 # Findings
-(May post source code later)
 - https://raw.githubusercontent.com/O1sSfh78hJ/ABC/refs/heads/main/manifest.json
 - https://raw.githubusercontent.com/O1sSfh78hJ/ABC/31d61470471c1f07349dfdc1c74edbbf24056a4a/scripts/G.lua
 - http://raw.githubusercontent.com/O1sSfh78hJ/ABC/refs/heads/main/loader.lua
