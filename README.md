@@ -1,7 +1,8 @@
-# My own script for Gakuran
-```lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Int3rtia/Scripts/main/GakuranPublic.lua"))()
-```
+# Make u own hub
+- Everything here is FREE, Copy the code and make your own hub. EZ MONEY!
+
+# Discord
+- `.int3rtia`
 
 # Another stuff
 - [Cracked Stuff](https://github.com/Int3rtia/Scripts/tree/main/Cracked-Stuff) : The stuff I cracked will be put here
