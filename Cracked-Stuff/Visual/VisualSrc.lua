@@ -1,4 +1,5 @@
 -- luarmor cracked by intertia
+-- src are not 1:1 same, i've disabled not working features.
 
 local G = (getgenv and getgenv()) or _G
 
