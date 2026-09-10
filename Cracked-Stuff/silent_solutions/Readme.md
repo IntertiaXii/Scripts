@@ -10,6 +10,10 @@
 
 # After
 - Ok... I understand, Bro privated everything after know that
+
+**Seems like bro care a lot** <br />
+<img src="https://github.com/user-attachments/assets/75b286da-d0b4-48f2-8e97-febb60133e38" />
+
 <img src="https://github.com/user-attachments/assets/1b14fcfc-cf85-4f35-aeb7-3d3c7348f6bd" />
 
 # Findings
